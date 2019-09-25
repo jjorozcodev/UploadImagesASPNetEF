@@ -9,7 +9,7 @@ namespace MyImageManager.Models
         public string Name { get; set; }
         public string ContentType { get; set; }
 
-        [Column(TypeName = "varbinary")]
+        [Column(TypeName = "varbinary(MAX)")]
         //[MaxLength]
         public byte[] Data { get; set; }
     }
