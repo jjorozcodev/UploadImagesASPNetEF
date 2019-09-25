@@ -1,53 +1,80 @@
 ﻿@model IEnumerable<MyImageManager.Models.Image>
 @{
-    ViewBag.Title = "My Image Manager";
+    ViewBag.Title = "Choose an image!";
 }
+<div>
+    <h1 class="text-center">Please select an image to upload!</h1>
+</div>
 
-<h1>Please select an image to upload!</h1>
+<br />
+<hr />
 
-@using (Html.BeginForm("Index", "Default", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <input type="file" name="postedFile" accept="image/*" />
-        <input type="submit" id="btnUpload" value="Upload" />
-}
+<div class="text-center">
+    @using (Html.BeginForm("Index", "Default", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="input-group">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="postedFile" name="postedFile" accept="image/*">
+                <label class="custom-file-label" for="postedFile">Choose file</label>
+            </div>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" id="btnUpload" type="submit">Upload</button>
+            </div>
+        </div>
+    }
+</div>
+
+<br />
+
 @using (Html.BeginForm("DownloadFile", "Default", FormMethod.Post))
 {
     <input type="hidden" id="hfFileId" name="FileId" />
         <input type="submit" id="btnDownload" value="Download" style="display:none" />
 }
-<hr />
-<table cellpadding="0" cellspacing="0">
-    <tr>
-        <th style="width:50px">File ID</th>
-        <th style="width:120px">File Name</th>
-        <th style="width:80px">Download</th>
-    </tr>
-    @if (Model.Count() > 0)
-    {
-        foreach (var file in Model)
+<table class="table table-bordered table-responsive-sm">
+    <thead class="thead-dark">
+        <tr>
+            <th style="width:50px">ID</th>
+            <th style="width:120px">Description</th>
+            <th style="width:80px">Preview</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() > 0)
+        {
+            foreach (var file in Model)
+            {
+                <tr>
+                    <td>@file.Id</td>
+                    <td>@file.Name</td>
+                    <td>
+                        <img class="img-thumbnail" src="data:image;base64,@System.Convert.ToBase64String(file.Data)" />
+                        <br />
+                        <a href="javascript:;" onclick="DownloadFile(@file.Id)">Download it!</a>
+                    </td>
+
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>@file.Id</td>
-                <td>@file.Name</td>
-                <td>
-                    <img class="img-thumbnail" src="data:image;base64,@System.Convert.ToBase64String(file.Data)" />
-                    <a href="javascript:;" onclick="DownloadFile(@file.Id)">Download</a>
-            </td>
-
-        </tr>
+                <td colspan="3">&nbsp;</td>
+            </tr>
         }
-    }
-    else
-    {
-        <tr>
-            <td colspan="3">&nbsp;</td>
-        </tr>
-    }
+    </tbody>
 </table>
 
 <script type="text/javascript">
-        function DownloadFile(fileId) {
-            $("#hfFileId").val(fileId);
-            $("#btnDownload")[0].click();
-        };
+    function DownloadFile(fileId) {
+        $("#hfFileId").val(fileId);
+        $("#btnDownload")[0].click();
+    };
+
+    $('#postedFile').change(function () {
+        $('.custom-file-label').html('Item selected!');
+        $('#btnUpload').removeClass('btn-outline-secondary');
+        $('#btnUpload').addClass('btn-outline-success');
+    });
+
 </script>

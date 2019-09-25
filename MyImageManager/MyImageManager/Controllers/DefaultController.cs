@@ -14,7 +14,7 @@ namespace MyImageManager.Controllers
 
         public ActionResult Index()
         {
-            return View(db.MyImages.ToList());
+            return View(db.MyImages.ToList().OrderByDescending(i => i.Id));
         }
 
         [HttpPost]
